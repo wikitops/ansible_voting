@@ -1,0 +1,26 @@
+---
+
+- name: VOTING APP 01 | Get kubectl binary location
+  command: /usr/bin/which kubectl
+  register: kubectl
+
+- name: VOTING APP 01 | Create directories
+  become: yes
+  file:
+    path: /data/voting
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: 0755
+    state: directory
+
+- name: VOTING APP 01 | Template Kubernetes Services files
+  template:
+    src: ../templates/data/voting/services.yaml
+    dest: /data/voting/{{ item.name }}.yaml
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: 0644
+  with_items: "{{ voting_services }}"
+
+- name: VOTING APP 01 | Manage Kubernetes Services
+  shell: "{{ kubectl.stdout }} apply -f /data/voting/"

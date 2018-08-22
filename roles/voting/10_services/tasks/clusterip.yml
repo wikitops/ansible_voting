@@ -1,0 +1,39 @@
+---
+
+- name: VOTING APP 10 | Clean Kubernetes Services
+  k8s:
+    state: absent
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: "{{ item }}"
+        namespace: "{{ app_namespace }}"
+  with_items:
+    - result
+    - vote
+
+- name: VOTING APP 10 | Get kubectl binary location
+  command: /usr/bin/which kubectl
+  register: kubectl
+
+- name: VOTING APP 10 | Create directories
+  become: yes
+  file:
+    path: /data/voting
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: 0755
+    state: directory
+
+- name: VOTING APP 10 | Template Kubernetes Services files
+  template:
+    src: ../templates/data/voting/services.yaml
+    dest: /data/voting/{{ item.name }}.yaml
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: 0644
+  with_items: "{{ voting_services }}"
+
+- name: VOTING APP 10 | Manage Kubernetes Services
+  shell: "{{ kubectl.stdout }} apply -f /data/voting/"

@@ -1,0 +1,7 @@
+---
+
+- name: VOTING APP 10 | Manage Internal Services
+  import_tasks: clusterip.yml
+
+- name: VOTING APP 10 | Manage External Services
+  import_tasks: ingress.yml

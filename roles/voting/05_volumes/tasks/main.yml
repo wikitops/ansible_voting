@@ -1,0 +1,7 @@
+---
+
+- name: VOTING APP 05 | Manage Database
+  import_tasks: database.yml
+
+- name: VOTING APP 05 | Manage Redis
+  import_tasks: redis.yml

@@ -1,0 +1,4 @@
+---
+
+- name: VOTING APP 00 | Manage Kubernetes Namespace
+  import_tasks: namespaces.yml

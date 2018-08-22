@@ -1,0 +1,85 @@
+---
+
+- name: VOTING APP 08 | Manage Kubernetes Namespace Default Memory LimitRange
+  k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: LimitRange
+      metadata:
+        name: voting-default-memory
+        namespace: "{{ app_namespace }}"
+      spec:
+        limits:
+          - default:
+              memory: 512Mi
+            defaultRequest:
+              memory: 256Mi
+            type: Container
+
+- name: VOTING APP 08 | Manage Kubernetes Namespace Max Memory LimitRange
+  k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: LimitRange
+      metadata:
+        name: voting-max-memory
+        namespace: "{{ app_namespace }}"
+      spec:
+        limits:
+          - max:
+              memory: 1Gi
+            defaultRequest:
+              memory: 512Mi
+            type: Container
+
+- name: VOTING APP 08 | Manage Kubernetes Namespace Default CPU LimitRange
+  k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: LimitRange
+      metadata:
+        name: voting-default-cpu
+        namespace: "{{ app_namespace }}"
+      spec:
+        limits:
+          - default:
+              cpu: 1
+            defaultRequest:
+              cpu: 0.2
+            type: Container
+
+- name: VOTING APP 08 | Manage Kubernetes Namespace Max CPU LimitRange
+  k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: LimitRange
+      metadata:
+        name: voting-maxcpu
+        namespace: "{{ app_namespace }}"
+      spec:
+        limits:
+          - max:
+              cpu: 2
+            defaultRequest:
+              cpu: 1
+            type: Container
+
+- name: VOTING APP 08 | Manage Kubernetes Namespace ResourceQuota
+  k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: ResourceQuota
+      metadata:
+        name: voting
+        namespace: "{{ app_namespace }}"
+      spec:
+        hard:
+          requests.cpu: 2
+          requests.memory: 2.5Gi
+          limits.cpu: 5
+          limits.memory: 5Gi

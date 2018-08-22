@@ -1,0 +1,16 @@
+---
+
+###
+## GENERALITIES
+###
+app_name: voting
+app_namespace: "{{ app_name }}"
+
+###
+# ENVIRONMENT VARIABLES
+###
+
+# Vote Environment Variables
+vote_env:
+  option_a: SWARM
+  option_b: KUBERNETES

@@ -1,0 +1,57 @@
+---
+
+- name: VOTING APP 04 | Manage Worker Deployment
+  k8s:
+    state: present
+    force: yes
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: "{{ item.name }}"
+        namespace: "{{ app_namespace }}"
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: "{{ item.name }}"
+        strategy:
+          type: RollingUpdate
+          rollingUpdate:
+            maxSurge: 1
+            maxUnavailable: 1
+        template:
+          metadata:
+            labels:
+              app: "{{ item.name }}"
+          spec:
+            containers:
+            - name: "{{ item.name }}"
+              image: "{{ item.image }}"
+              env:
+                - name: "REDIS_SERVICE_NAME"
+                  valueFrom:
+                    configMapKeyRef:
+                      name: redis
+                      key: service.name
+                - name: "DB_SERVICE_NAME"
+                  valueFrom:
+                    configMapKeyRef:
+                      name: db
+                      key: service.name
+                - name: "DB_NAME"
+                  valueFrom:
+                    configMapKeyRef:
+                      name: db
+                      key: db.name
+                - name: "DB_USERNAME"
+                  valueFrom:
+                    secretKeyRef:
+                      name: db
+                      key: username
+                - name: "DB_PASSWORD"
+                  valueFrom:
+                    secretKeyRef:
+                      name: db
+                      key: password
+  with_items: "{{ worker_deployment }}"

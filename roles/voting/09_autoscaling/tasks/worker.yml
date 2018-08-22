@@ -1,0 +1,23 @@
+---
+
+- name: VOTING APP 09 | Manage Worker AutoScaling
+  k8s:
+    state: present
+    definition:
+      apiVersion: autoscaling/v2beta1
+      kind: HorizontalPodAutoscaler
+      metadata:
+        name: worker
+        namespace: "{{ app_namespace }}"
+      spec:
+        scaleTargetRef:
+          apiVersion: apps/v1
+          kind: Deployment
+          name: worker
+        minReplicas: 1
+        maxReplicas: 5
+        metrics:
+        - type: Resource
+          resource:
+            name: cpu
+            targetAverageUtilization: 50

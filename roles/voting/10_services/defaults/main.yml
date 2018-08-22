@@ -1,0 +1,36 @@
+---
+
+###
+## SERVICES
+###
+voting_services:
+  # Postgresql Database
+  - name: db
+    type: ClusterIP
+    targetPort: 5432
+    port: 5432
+
+  # Redis Queue
+  - name: redis
+    type: ClusterIP
+    targetPort: 6379
+    port: 6379
+
+###
+# INGRESS
+###
+
+
+voting_ingress:
+
+  # Result Ingress
+  - name: result
+    path: /result
+    serviceName: result
+    servicePort: 5001
+
+  # Vote Ingress
+  - name: vote
+    path: /vote
+    serviceName: vote
+    servicePort: 5000

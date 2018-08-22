@@ -1,0 +1,8 @@
+---
+
+- name: VOTING APP 00 | Manage Kubernetes Namespace
+  k8s:
+    state: present
+    name: "{{ app_namespace | default('voting') }}"
+    api_version: v1
+    kind: Namespace

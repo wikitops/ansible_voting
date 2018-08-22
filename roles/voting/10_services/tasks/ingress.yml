@@ -1,0 +1,26 @@
+---
+
+- name: VOTING APP 10 | Get kubectl binary location
+  command: /usr/bin/which kubectl
+  register: kubectl
+
+- name: VOTING APP 10 | Create directories
+  become: yes
+  file:
+    path: /data/voting
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: 0755
+    state: directory
+
+- name: VOTING APP 10 | Template Kubernetes Ingress files
+  template:
+    src: ../templates/data/voting/ingress.yaml
+    dest: /data/voting/{{ item.name }}.yaml
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: 0644
+  with_items: "{{ voting_ingress }}"
+
+- name: VOTING APP 10 | Manage Kubernetes Ingress
+  shell: "{{ kubectl.stdout }} apply -f /data/voting/"

@@ -1,0 +1,39 @@
+---
+
+- name: VOTING APP 02 | Manage Vote Deployment
+  k8s:
+    state: present
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: "{{ item.name }}"
+        namespace: "{{ app_namespace }}"
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: "{{ item.name }}"
+        strategy:
+          type: RollingUpdate
+          rollingUpdate:
+            maxSurge: 1
+            maxUnavailable: 1
+        template:
+          metadata:
+            labels:
+              app: "{{ item.name }}"
+          spec:
+            containers:
+            - name: "{{ item.name }}"
+              image: "{{ item.image }}"
+              env:
+                - name: "REDIS_SERVICE_NAME"
+                  value: "redis"
+                - name: "PORT"
+                  value: "8080"
+                - name: "OPTION_A"
+                  value: "{{ vote_env.option_a }}"
+                - name: "OPTION_B"
+                  value: "{{ vote_env.option_b }}"
+  with_items: "{{ vote_deployment }}"

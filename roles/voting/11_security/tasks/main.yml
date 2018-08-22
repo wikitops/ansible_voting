@@ -1,0 +1,16 @@
+---
+
+- name: VOTING APP 11 | Manage Namespace
+  import_tasks: namespaces.yml
+
+- name: VOTING APP 11 | Manage Database
+  import_tasks: database.yml
+
+- name: VOTING APP 11 | Manage Redis Queue
+  import_tasks: redis.yml
+
+- name: VOTING APP 11 | Manage Result App
+  import_tasks: result.yml
+
+- name: VOTING APP 11 | Manage Vote App
+  import_tasks: vote.yml

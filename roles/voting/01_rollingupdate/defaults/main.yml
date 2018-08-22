@@ -1,0 +1,79 @@
+---
+
+###
+## SERVICES
+###
+voting_services:
+  # Postgresql Database
+  - name: db
+    type: ClusterIP
+    targetPort: 5432
+    port: 5432
+
+  # Redis Queue
+  - name: redis
+    type: ClusterIP
+    targetPort: 6379
+    port: 6379
+
+  # Result App
+  - name: result
+    type: NodePort
+    targetPort: 8080
+    port: 5001
+
+  # Vote App
+  - name: vote
+    type: NodePort
+    targetPort: 8080
+    port: 5000
+
+###
+## DEPLOYMENTS
+###
+
+# Database Deployment
+database_deployment:
+  - name: db
+    image: postgres:9.4
+
+# Redis Deployment
+redis_deployment:
+  - name: redis
+    image: redis:alpine
+
+# Result Deployment
+result_deployment:
+  - name: result
+    image: wikitops/examplevotingapp-result:1.0
+
+# Vote Deployment
+vote_deployment:
+  - name: vote
+    image: wikitops/examplevotingapp-vote:1.0
+
+# Worker Deployment
+worker_deployment:
+  - name: worker
+    image: wikitops/examplevotingapp-worker:1.0
+
+###
+# ENVIRONMENT VARIABLES
+###
+
+# Database Environment Variables
+database_env:
+  username: voting
+  # password : bafqQv4M
+  password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          63386439373635646433626563373962623635363831633463366533363236316634313837333762
+          3637633066616139346432616531306331343934343064300a393037303061313735656266323261
+          63646633663065373831323635636230346334623164353235643731393664303063653630366662
+          6130326261626664640a336330623836613061383835343364316435393031366136626665613364
+          6231
+
+# Vote Environment Variables
+vote_env:
+  option_a: SWARM
+  option_b: KUBERNETES

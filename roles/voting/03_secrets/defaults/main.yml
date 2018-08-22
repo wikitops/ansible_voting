@@ -1,0 +1,36 @@
+---
+
+###
+## DEPLOYMENTS
+###
+
+# Database Deployment
+database_deployment:
+  - name: db
+    image: postgres:9.4
+
+# Result Deployment
+result_deployment:
+  - name: result
+    image: wikitops/examplevotingapp-result:1.0
+
+# Worker Deployment
+worker_deployment:
+  - name: worker
+    image: wikitops/examplevotingapp-worker:1.0
+
+###
+# SECRETS
+###
+
+# Database Secret
+database_secret:
+  username: dm90aW5n # echo -n 'voting' | base64
+  # password: YmFmcVF2NE0= # ansible-vault encrypt_string --vault-id vault '$(echo -n 'bafqQv4M' | base64)' --name 'password' --encrypt-vault-id default
+  password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          35376566653765333838613436666663666566316135633162663132343739393364373664323361
+          3138326437383864313566646535313331646537643934310a633464373337373764623366643261
+          35366630663464393566646330383238633163343036663639623765303936373034623233396261
+          3861656163353038630a383936383634393266303264383863303265373731323331656665666136
+          3037

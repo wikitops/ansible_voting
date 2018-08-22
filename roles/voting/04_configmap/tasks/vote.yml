@@ -1,0 +1,67 @@
+---
+
+- name: VOTING APP 04 | Manage Vote ConfigMap
+  k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: vote
+        namespace: "{{ app_namespace }}"
+      data:
+        port: "{{ item.port }}"
+        option_a: "{{ item.option_b }}"
+        option_b: "{{ item.option_a }}"
+  with_items: "{{ vote_configmap }}"
+
+- name: VOTING APP 04 | Manage Vote Deployment
+  k8s:
+    state: present
+    force: yes
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: "{{ item.name }}"
+        namespace: "{{ app_namespace }}"
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: "{{ item.name }}"
+        strategy:
+          type: RollingUpdate
+          rollingUpdate:
+            maxSurge: 1
+            maxUnavailable: 1
+        template:
+          metadata:
+            labels:
+              app: "{{ item.name }}"
+          spec:
+            containers:
+            - name: "{{ item.name }}"
+              image: "{{ item.image }}"
+              env:
+                - name: "REDIS_SERVICE_NAME"
+                  valueFrom:
+                    configMapKeyRef:
+                      name: redis
+                      key: service.name
+                - name: "PORT"
+                  valueFrom:
+                    configMapKeyRef:
+                      name: vote
+                      key: port
+                - name: "OPTION_A"
+                  valueFrom:
+                    configMapKeyRef:
+                      name: vote
+                      key: option_a
+                - name: "OPTION_B"
+                  valueFrom:
+                    configMapKeyRef:
+                      name: vote
+                      key: option_b
+  with_items: "{{ vote_deployment }}"

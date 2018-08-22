@@ -1,0 +1,29 @@
+---
+
+###
+## DEPLOYMENTS
+###
+
+# Database Deployment
+database_deployment:
+  - name: db
+
+# Redis Deployment
+redis_deployment:
+  - name: redis
+
+###
+## STATFULSET
+###
+
+# Database StatefulSet
+database_statefulset:
+  - name: db
+    image: postgres:9.4
+    volume_hostPath: /data/postgres
+
+# Redis StatefulSet
+redis_statefulset:
+  - name: redis
+    image: redis:alpine
+    volume_hostPath: /data/redis

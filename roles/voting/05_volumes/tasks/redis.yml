@@ -1,0 +1,60 @@
+---
+
+- name: VOTING APP 05 | Create directories
+  become: yes
+  file:
+    path: "{{ redis_statefulset.0.volume_hostPath }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  delegate_to: "{{ item }}"
+  with_items: "{{ groups['slaves'] }}"
+
+- name: VOTING APP 05 | Clean Redis Deployment
+  k8s:
+    state: absent
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: "{{ item.name }}"
+        namespace: "{{ app_namespace }}"
+  with_items: "{{ redis_deployment }}"
+
+- name: VOTING APP 05 | Manage Redis StatefulSet
+  k8s:
+    state: present
+    definition:
+      apiVersion: apps/v1
+      kind: StatefulSet
+      metadata:
+        name: "{{ item.name }}"
+        namespace: "{{ app_namespace }}"
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: "{{ item.name }}"
+        strategy:
+          type: RollingUpdate
+          rollingUpdate:
+            maxSurge: 1
+            maxUnavailable: 1
+        template:
+          metadata:
+            labels:
+              app: "{{ item.name }}"
+          spec:
+            containers:
+            - name: "{{ item.name }}"
+              image: "{{ item.image }}"
+              volumeMounts:
+                - mountPath: /data
+                  name: redis-data
+            volumes:
+            - name: redis-data
+              hostPath:
+                path: "{{ item.volume_hostPath }}"
+                type: Directory
+  with_items: "{{ redis_statefulset }}"

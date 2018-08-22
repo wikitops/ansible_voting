@@ -1,0 +1,49 @@
+---
+
+###
+## DEPLOYMENTS
+###
+
+# Database Deployment
+database_deployment:
+  - name: db
+    image: postgres:9.4
+
+# Redis Deployment
+redis_deployment:
+  - name: redis
+    image: redis:alpine
+
+# Result Deployment
+result_deployment:
+  - name: result
+    image: wikitops/examplevotingapp-result:1.0
+
+# Vote Deployment
+vote_deployment:
+  - name: vote
+    image: wikitops/examplevotingapp-vote:1.0
+
+# Worker Deployment
+worker_deployment:
+  - name: worker
+    image: wikitops/examplevotingapp-worker:1.0
+
+###
+# CONFIGMAP
+###
+
+# Database ConfigMap
+database_configmap:
+  - service_name: db
+    db_name: voting
+
+# Redis ConfigMap
+redis_configmap:
+  - service_name: redis
+
+# Vote ConfigMap
+vote_configmap:
+  - port: 8080
+    option_a: SWARM
+    option_b: KUBERNETES

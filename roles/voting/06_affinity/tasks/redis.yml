@@ -1,0 +1,47 @@
+---
+
+- name: VOTING APP 06 | Manage Redis StatefulSet
+  k8s:
+    state: present
+    definition:
+      apiVersion: apps/v1
+      kind: StatefulSet
+      metadata:
+        name: "{{ item.name }}"
+        namespace: "{{ app_namespace }}"
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: "{{ item.name }}"
+        strategy:
+          type: RollingUpdate
+          rollingUpdate:
+            maxSurge: 1
+            maxUnavailable: 1
+        template:
+          metadata:
+            labels:
+              app: "{{ item.name }}"
+          spec:
+            affinity:
+              nodeAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  nodeSelectorTerms:
+                  - matchExpressions:
+                    - key: kubernetes.io/hostname
+                      operator: In
+                      values:
+                        - k8s-worker03
+            containers:
+            - name: "{{ item.name }}"
+              image: "{{ item.image }}"
+              volumeMounts:
+                - mountPath: /data
+                  name: redis-data
+            volumes:
+            - name: redis-data
+              hostPath:
+                path: "{{ item.volume_hostPath }}"
+                type: Directory
+  with_items: "{{ redis_statefulset }}"

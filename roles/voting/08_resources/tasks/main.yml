@@ -1,0 +1,4 @@
+---
+
+- name: VOTING APP 08 | Manage Namespace
+  import_tasks: namespaces.yml

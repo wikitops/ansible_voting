@@ -1,0 +1,58 @@
+---
+
+dependencies:
+  # Namespace
+  - role: voting/00_namespace
+    tags: voting-00
+
+  # Rolling Updates
+  - role: voting/01_rollingupdate
+    tags: voting-01
+
+  # Environement Variables
+  - role: voting/02_environment
+    tags: voting-02
+
+  # Secrets
+  - role: voting/03_secrets
+    tags: voting-03
+
+  # ConfigMap
+  - role: voting/04_configmap
+    tags: voting-04
+
+  # Persistent Volumes
+  - role: voting/05_volumes
+    tags: voting-05
+
+  # Affinity
+  - role: voting/06_affinity
+    tags: voting-06
+
+  # Healthchecks
+  - role: voting/07_healthchecks
+    tags: voting-07
+
+  # Resources Limits
+  - role: voting/08_resources
+    tags: voting-08
+
+  # Auto Scaling
+  - role: voting/09_autoscaling
+    tags: voting-09
+
+  # Services
+  - role: voting/10_services
+    tags: voting-10
+
+  # Security
+  - role: voting/11_security
+    tags: voting-11
+
+  # Operators
+  - role: voting/12_operators
+    tags: voting-12
+
+  # Helm
+  - role: voting/13_helm
+    tags: voting-13

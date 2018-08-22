@@ -1,0 +1,15 @@
+# {{ ansible_managed }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ item.name }}"
+  namespace: "{{ app_namespace }}"
+spec:
+  ports:
+  - name: "{{ item.name }}"
+    port: {{ item.port }}
+    protocol: TCP
+    targetPort: {{ item.targetPort }}
+  selector:
+    app: "{{ item.name }}"
+  type: "{{ item.type }}"

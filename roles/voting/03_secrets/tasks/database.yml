@@ -1,0 +1,65 @@
+---
+
+- name: VOTING APP 03 | Manage Database Secret
+  k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: db
+        namespace: "{{ app_namespace }}"
+      type: Opaque
+      data:
+        username: "{{ database_secret.username }}"
+        password: "{{ database_secret.password }}"
+  with_items: "{{ database_secret }}"
+
+- name: VOTING APP 03 | Manage Database Deployment
+  k8s:
+    state: present
+    force: yes
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: "{{ item.name }}"
+        namespace: "{{ app_namespace }}"
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: "{{ item.name }}"
+        strategy:
+          type: RollingUpdate
+          rollingUpdate:
+            maxSurge: 1
+            maxUnavailable: 1
+        template:
+          metadata:
+            labels:
+              app: "{{ item.name }}"
+          spec:
+            containers:
+            - name: "{{ item.name }}"
+              image: "{{ item.image }}"
+              env:
+                - name: "DB_NAME"
+                  value: "voting"
+                - name: "DB_USERNAME"
+                  valueFrom:
+                    secretKeyRef:
+                      name: db
+                      key: username
+                - name: "DB_PASSWORD"
+                  valueFrom:
+                    secretKeyRef:
+                      name: db
+                      key: password
+              volumeMounts:
+                - mountPath: /var/lib/postgresql/data
+                  name: db-data
+            volumes:
+              - name: db-data
+                emptyDir: {}
+  with_items: "{{ database_deployment }}"

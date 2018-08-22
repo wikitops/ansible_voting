@@ -1,0 +1,27 @@
+---
+
+- name: VOTING APP 06 | Clean StatefulSets
+  k8s:
+    state: absent
+    definition:
+      apiVersion: apps/v1
+      kind: StatefulSet
+      metadata:
+        name: "{{ item.name }}"
+        namespace: "{{ app_namespace }}"
+  with_items:
+    - "{{ database_statefulset }}"
+    - "{{ redis_statefulset }}"
+
+- name: VOTING APP 06 | Clean Deployments
+  k8s:
+    state: absent
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: "{{ item.name }}"
+        namespace: "{{ app_namespace }}"
+  with_items:
+    - "{{ result_deployment }}"
+    - "{{ vote_deployment }}"

@@ -1,5 +1,8 @@
 ---
 
+- name: VOTING APP 06 | Clean Deployments
+  import_tasks: clean.yml
+
 - name: VOTING APP 06 | Manage Database
   import_tasks: database.yml
 

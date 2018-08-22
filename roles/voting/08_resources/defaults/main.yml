@@ -1,0 +1,36 @@
+---
+
+###
+## DEPLOYMENTS
+###
+
+# Result Deployment
+result_deployment:
+  - name: result
+    image: wikitops/examplevotingapp-result:1.0
+
+# Vote Deployment
+vote_deployment:
+  - name: vote
+    image: wikitops/examplevotingapp-vote:1.0
+
+# Worker Deployment
+worker_deployment:
+  - name: worker
+    image: wikitops/examplevotingapp-worker:1.0
+
+###
+## STATFULSET
+###
+
+# Database StatefulSet
+database_statefulset:
+  - name: db
+    image: postgres:9.4
+    volume_hostPath: /data/postgres
+
+# Redis StatefulSet
+redis_statefulset:
+  - name: redis
+    image: redis:alpine
+    volume_hostPath: /data/redis

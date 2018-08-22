@@ -4,7 +4,7 @@
   k8s:
     state: present
     definition:
-      apiVersion: autoscaling/v2beta1
+      apiVersion: autoscaling/v1
       kind: HorizontalPodAutoscaler
       metadata:
         name: vote

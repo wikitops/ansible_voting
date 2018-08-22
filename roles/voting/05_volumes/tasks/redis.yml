@@ -11,17 +11,6 @@
   delegate_to: "{{ item }}"
   with_items: "{{ groups['slaves'] }}"
 
-- name: VOTING APP 05 | Clean Redis Deployment
-  k8s:
-    state: absent
-    definition:
-      apiVersion: apps/v1
-      kind: Deployment
-      metadata:
-        name: "{{ item.name }}"
-        namespace: "{{ app_namespace }}"
-  with_items: "{{ redis_deployment }}"
-
 - name: VOTING APP 05 | Manage Redis StatefulSet
   k8s:
     state: present

@@ -1,0 +1,14 @@
+---
+
+- name: VOTING APP 05 | Clean Deployments
+  k8s:
+    state: absent
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: "{{ item.name }}"
+        namespace: "{{ app_namespace }}"
+  with_items:
+    - "{{ database_deployment }}"
+    - "{{ redis_deployment }}"
